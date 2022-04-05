@@ -353,6 +353,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 		{
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			log.log(Level.SEVERE, "AUTH-SERVLET: [" + request.getRemoteAddr()+ "] ERROR: " + e.getMessage());
+			log.log("Error by Braz")
 		}
 	}
 
@@ -581,7 +582,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 				response.content = sw.toString();
 			}
 		}
-		
+		log.log(response)
 		return response;
 	}
 
