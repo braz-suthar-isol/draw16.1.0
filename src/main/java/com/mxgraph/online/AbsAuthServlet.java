@@ -100,7 +100,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 		
 		public String getRedirectUrl(String domain)
 		{
-			return "https://" + domain + REDIRECT_PATH;
+			return "http://" + domain + REDIRECT_PATH;
 		}
 	}
 	
