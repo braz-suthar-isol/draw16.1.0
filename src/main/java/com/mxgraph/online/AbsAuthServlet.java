@@ -99,7 +99,8 @@ abstract public class AbsAuthServlet extends HttpServlet
 		}
 		
 		public String getRedirectUrl(String domain)
-		{
+		{	
+			log.log("getRedirectUrl => " + "http://" + domain + REDIRECT_PATH);
 			return "http://" + domain + REDIRECT_PATH;
 		}
 	}
@@ -249,6 +250,12 @@ abstract public class AbsAuthServlet extends HttpServlet
 				stateToken = stateVars.get("token");
 				version = stateVars.get("ver");
 				successRedirect = stateVars.get("redirect");
+				
+				log.log(domain);
+				log.log(client);
+				log.log(stateToken);
+				log.log(version);
+				log.log(successRedirect);
 
 				//Redirect to a page on the same domain only (relative path) TODO Is this enough?
 				// if (successRedirect != null && successRedirect.toLowerCase().startsWith("http"))
@@ -275,7 +282,9 @@ abstract public class AbsAuthServlet extends HttpServlet
 			}
 
 			Config CONFIG = getConfig();
+			log.log(CONFIG);
 			redirectUri = CONFIG.getRedirectUrl(domain != null? domain : request.getServerName());
+			log.log(redirectUri);
 			
 			secret = CONFIG.getClientSecret(client);
 			
@@ -334,8 +343,10 @@ abstract public class AbsAuthServlet extends HttpServlet
 				
 				if (authResp.content != null)
 				{
+					log.log("authResp.content != null");
 					if (successRedirect != null)
 					{
+						log.log("successRedirect != null");
 						response.sendRedirect(successRedirect + "#" + Utils.encodeURIComponent(authResp.content, "UTF-8"));
 					}
 					else
@@ -353,7 +364,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 		{
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			log.log(Level.SEVERE, "AUTH-SERVLET: [" + request.getRemoteAddr()+ "] ERROR: " + e.getMessage());
-			log.log("Error by Braz")
+			log.log("Error by Braz");
 		}
 	}
 
@@ -582,7 +593,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 				response.content = sw.toString();
 			}
 		}
-		log.log(response)
+		log.log(response);
 		return response;
 	}
 
