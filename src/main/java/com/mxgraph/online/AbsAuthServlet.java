@@ -100,8 +100,8 @@ abstract public class AbsAuthServlet extends HttpServlet
 		
 		public String getRedirectUrl(String domain)
 		{	
-			log.log("getRedirectUrl => " + "http://" + domain + REDIRECT_PATH);
-			return "http://" + domain + REDIRECT_PATH;
+			log.log(Level.INFO ,"getRedirectUrl => " + "http://" + domain + REDIRECT_PATH);
+			return "https://" + domain + REDIRECT_PATH;
 		}
 	}
 	
@@ -211,6 +211,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 			String state = new BigInteger(256, random).toString(32);
 			String key = new BigInteger(256, random).toString(32);
 			putCacheValue(key, state);
+			log.log(Level.INFO, "getStateParameter");
 			log.log(Level.INFO, "AUTH-SERVLET: [" + request.getRemoteAddr() + "] Added state (" + key + " -> " + state + ")");
 			response.setStatus(HttpServletResponse.SC_OK);
 			//Chrome blocks this cookie when draw.io is running in an iframe. The cookie is added to parent frame. TODO FIXME
@@ -251,17 +252,18 @@ abstract public class AbsAuthServlet extends HttpServlet
 				version = stateVars.get("ver");
 				successRedirect = stateVars.get("redirect");
 				
-				log.log(domain);
-				log.log(client);
-				log.log(stateToken);
-				log.log(version);
-				log.log(successRedirect);
+				log.log(Level.INFO, domain);
+				log.log(Level.INFO, client);
+				log.log(Level.INFO, stateToken);
+				log.log(Level.INFO, version);
+				log.log(Level.INFO, successRedirect);
+				
 
 				//Redirect to a page on the same domain only (relative path) TODO Is this enough?
-				// if (successRedirect != null && successRedirect.toLowerCase().startsWith("http"))
-				// {
-				// 	successRedirect = null;
-				// }
+				 if (successRedirect != null && successRedirect.toLowerCase().startsWith("http"))
+				 {
+				 	successRedirect = null;
+				}
 				
 				//Get the cached state based on the cookie key 
 				String cacheKey = getCookieValue(STATE_COOKIE, request);
@@ -269,6 +271,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 				if (cacheKey != null)
 				{
 					cookieToken = (String) tokenCache.get(cacheKey);
+					log.log(Level.INFO, "cookies found");
 					log.log(Level.INFO, "AUTH-SERVLET: [" + request.getRemoteAddr() + "] Found cookie state (" + cacheKey + " -> " + cookieToken + ")");
 					//Delete cookie & cache after being used since it is a single use
 					tokenCache.remove(cacheKey);
@@ -282,9 +285,9 @@ abstract public class AbsAuthServlet extends HttpServlet
 			}
 
 			Config CONFIG = getConfig();
-			log.log(CONFIG);
+			log.log(Level.INFO, CONFIG);
 			redirectUri = CONFIG.getRedirectUrl(domain != null? domain : request.getServerName());
-			log.log(redirectUri);
+			log.log(Level.INFO, redirectUri);
 			
 			secret = CONFIG.getClientSecret(client);
 			
@@ -308,6 +311,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 			}
 			else if (error != null)
 			{
+				log.log(Level.INFO, "SC_UNAUTHORIZED");
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				
 				OutputStream out = response.getOutputStream();
@@ -322,11 +326,13 @@ abstract public class AbsAuthServlet extends HttpServlet
 			}
 			else if ((code == null && refreshToken == null) || client == null || redirectUri == null || secret == null)
 			{
+				log.log(Level.INFO, "SC_BAD_REQUEST");
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 			//Non GAE runtimes are excluded from state check. TODO Change GAE stub to return null from CacheFactory
 			else if (IS_GAE && (stateToken == null || !stateToken.equals(cookieToken)))
 			{
+				log.log(Level.WARNING, "SC_UNAUTHORIZED2");
 				log.log(Level.WARNING, "AUTH-SERVLET: [" + request.getRemoteAddr() + "] STATE MISMATCH (state: " + stateToken + " != cookie: " + cookieToken + ")");
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			}
@@ -343,10 +349,10 @@ abstract public class AbsAuthServlet extends HttpServlet
 				
 				if (authResp.content != null)
 				{
-					log.log("authResp.content != null");
+					log.log(Level.INFO, "authResp.content != null");
 					if (successRedirect != null)
 					{
-						log.log("successRedirect != null");
+						log.log(Level.INFO, "successRedirect != null");
 						response.sendRedirect(successRedirect + "#" + Utils.encodeURIComponent(authResp.content, "UTF-8"));
 					}
 					else
@@ -364,7 +370,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 		{
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			log.log(Level.SEVERE, "AUTH-SERVLET: [" + request.getRemoteAddr()+ "] ERROR: " + e.getMessage());
-			log.log("Error by Braz");
+			log.log(Level.INFO, "Error by Braz");
 		}
 	}
 
@@ -593,7 +599,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 				response.content = sw.toString();
 			}
 		}
-		log.log(response);
+		log.log(Level.INFO, response);
 		return response;
 	}
 
