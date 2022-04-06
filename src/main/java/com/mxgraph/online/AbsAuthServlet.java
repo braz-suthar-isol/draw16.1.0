@@ -285,7 +285,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 			}
 
 			Config CONFIG = getConfig();
-			log.log(Level.INFO, CONFIG);
+			//log.log(Level.INFO, CONFIG);
 			redirectUri = CONFIG.getRedirectUrl(domain != null? domain : request.getServerName());
 			log.log(Level.INFO, redirectUri);
 			
@@ -599,7 +599,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 				response.content = sw.toString();
 			}
 		}
-		log.log(Level.INFO, response);
+		//log.log(Level.INFO, response);
 		return response;
 	}
 
