@@ -326,6 +326,11 @@ abstract public class AbsAuthServlet extends HttpServlet
 			}
 			else if ((code == null && refreshToken == null) || client == null || redirectUri == null || secret == null)
 			{
+				log.log(Level.INFO, "Code => " + code);
+				log.log(Level.INFO, "refreshToken => " + refreshToken);
+				log.log(Level.INFO, "client => " + client);
+				log.log(Level.INFO, "redirectUri => " + redirectUri);
+				log.log(Level.INFO, "secret => " + secret);
 				log.log(Level.INFO, "SC_BAD_REQUEST");
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
