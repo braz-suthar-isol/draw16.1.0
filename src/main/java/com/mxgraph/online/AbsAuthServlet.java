@@ -272,7 +272,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 				{
 					cookieToken = (String) tokenCache.get(cacheKey);
 					log.log(Level.INFO, "cookies found");
-					log.log(Level.INFO, "AUTH-SERVLET: [" + request.getRemoteAddr() + "] Found cookie state (" + cacheKey + " -> " + cookieToken + ")");
+					log.log(Level.INFO, "sdfsadfsafAUTH-SERVLET: [" + request.getRemoteAddr() + "] Found cookie state (" + cacheKey + " -> " + cookieToken + ")");
 					//Delete cookie & cache after being used since it is a single use
 					tokenCache.remove(cacheKey);
 					deleteCookie(STATE_COOKIE, response);
